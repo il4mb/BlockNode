@@ -25,6 +25,13 @@ class Node
                 $this->append($attribute["children"]);
                 unset($attribute["children"]);
             }
+            $attribute = array_filter($attribute, function ($v) {
+                if ($v instanceof Node || is_string($v) && NodeParser::isHTML(trim($v))) {
+                    $this->append($v);
+                    return false;
+                }
+                return true;
+            });
             $this->attribute = array_map(fn($v) => is_string($v) ? trim($v) : $v, $attribute);
         } else {
             $this->append($attribute);
@@ -37,9 +44,7 @@ class Node
             $content->parent = $this;
             $prepend ? array_unshift($this->children, $content) : $this->children[] = $content;
             return;
-        }
-
-        if (is_string($content)) {
+        } else if (is_string($content)) {
             if (NodeParser::isHTML(trim($content))) {
                 $nodes = NodeParser::fromHTML(trim($content));
                 $this->addContent($nodes, $prepend);
@@ -48,6 +53,9 @@ class Node
                 $node->parent = $this;
                 $prepend ? array_unshift($this->children, $node) : $this->children[] = $node;
             }
+            return;
+        } else if (is_array($content) && (isset($content['children']) || isset($content['attribute']) || isset($content['tagname']))) {
+            $this->addContent(NodeParser::fromArray($content), $prepend);
             return;
         }
 

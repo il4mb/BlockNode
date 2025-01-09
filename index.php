@@ -11,7 +11,5 @@ $node = new Node("div", [
     "class" => "test"
 ]);
 
-// print_r($node);
-
 $node->query(".test")->prepend("<p>Hallo</p>", 1);
 echo $node;
