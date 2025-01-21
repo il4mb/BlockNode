@@ -108,7 +108,7 @@ class NodeQuery implements Countable
                 : [];
             $attributes = isset($matches['attributes']) ? $matches['attributes'] : '';
 
-          
+
             // Check tag name
             if ($tag && $node->tagName !== $tag) {
                 return false;
@@ -120,7 +120,7 @@ class NodeQuery implements Countable
             }
 
             // Check class
-            $nodeclass = $node->getAttr('class') ?? [];
+            $nodeclass = $node->getAttr("class") ?? [];
             if (!empty($class) && array_diff($class, $nodeclass)) {
                 return false;
             }

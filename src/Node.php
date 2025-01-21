@@ -124,6 +124,7 @@ class Node
         return in_array($className, $this->get("class", []));
     }
 
+
     public function toggleClass(string $className): void
     {
         if ($this->hasClass($className)) {
@@ -135,6 +136,10 @@ class Node
 
     public function getAttr(string $name)
     {
+        if ($name == "class") {
+            $className = $this->get($name, "");
+            return is_string($className) ? explode(" ", $className) : $className;
+        }
         return $this->get($name);
     }
 
