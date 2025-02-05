@@ -17,7 +17,7 @@ class NodeParser
                 if ($node instanceof Node) {
                     $nodes[] = $node;
                 } elseif (is_array($node)) {
-                    $nodes = array_merge($nodes, self::fromArray($node));
+                    $nodes->append(self::fromArray($node));
                 }
             }
         } elseif (isset($component['tagName']) || isset($component['children'])) {
