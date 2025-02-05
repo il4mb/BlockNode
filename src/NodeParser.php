@@ -9,9 +9,9 @@ class NodeParser
         return array_reduce($nodes, fn($html, $node) => $html . $node->render(), '');
     }
 
-    static function fromArray(array $component): array
+    static function fromArray(array $component): NodeList
     {
-        $nodes = [];
+        $nodes = new NodeList();
         if (array_is_list($component)) {
             foreach ($component as $node) {
                 if ($node instanceof Node) {
@@ -34,7 +34,7 @@ class NodeParser
         return $nodes;
     }
 
-    static function fromHTML(string $html, ?callable $callback = null): array
+    static function fromHTML(string $html, ?callable $callback = null): NodeList
     {
         if (trim($html) === '') return [];
 
@@ -43,7 +43,7 @@ class NodeParser
         $dom->loadHTML("<div>$html</div>", LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         libxml_clear_errors();
 
-        $blocks = [];
+        $blocks = new NodeList();
         foreach ($dom->firstChild->childNodes as $childNode) {
             if ($childNode instanceof \DOMElement) {
                 $block = self::parseElement($childNode, $callback);
@@ -53,7 +53,7 @@ class NodeParser
         return $blocks;
     }
 
-    private static function parseElement(\DOMElement $element, ?callable $callback = null): Node
+    static function parseElement(\DOMElement $element, ?callable $callback = null): Node
     {
         $block = new Node($element->tagName, []);
         foreach ($element->attributes as $attr) {
