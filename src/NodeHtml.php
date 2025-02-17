@@ -32,4 +32,12 @@ class NodeHtml extends Node
         }
         $this->head->query("title")->append($title);
     }
+
+    function toArray(): array
+    {
+        return [
+            "tagName" => $this->tagName,
+            "children" => array_map(fn($child) => $child->toArray(), $this->children)
+        ];
+    }
 }
